@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- Message 2E -->
+    <message>
+        <messageType>
+            <value>2E</value>
+        </messageType>
+        <firm/>
+        <side/>
+        <orderNo/>
+        <entryDate/>
+        <filler>
+            <length>2</length>
+        </filler>
+        <volume/>
+        <price/>
+        <confirmNo/>
+    </message>
+
+    <!-- Message 2I -->
+    <message>
+        <messageType>
+            <value>2I</value>
+        </messageType>
+        <firm/>
+        <side/>
+        <buyOrderNo>
+            <length>8</length>
+            <type>int</type>
+            </buyOrderNo>
+        <buyEntryDate>
+            <length>4</length>
+            <type>int</type>
+        </buyEntryDate>
+        <sellOrderNo>
+            <length>8</length>
+            <type>int</type>
+        </sellOrderNo>
+        <sellEntryDate>
+            <length>4</length>
+            <type>int</type>
+        </sellEntryDate>
+        <volume/>
+        <price/>
+            <confirmNo/>
+    </message>
+
+    <!-- Message 2G -->
+    <message>
+        <messageType>
+            <value>2G</value>
+        </messageType>
+        <firm/>
+        <reasonCode>
+            <length>2</length>
+            <type>int</type>
+        </reasonCode>
+        <originalMessage>
+            <length>233</length>
+            <type>string</type>
+        </originalMessage>
+    </message>
+</root>

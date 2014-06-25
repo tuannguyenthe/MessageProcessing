@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+    <!-- Message 1C-->
+    <message>
+        <messageType>
+            <value>1C</value>
+        </messageType>
+        <firm/>
+        <orderNo/>
+        <entryDate/>
+    </message>
+
+    <!-- Message 1D-->
+    <message>
+    <messageType>
+        <value>1D</value>
+    </messageType>
+        <firm/>
+        <orderNo/>
+        <entryDate/>
+        <clientID/>
+        <filler>
+            <length>10</length>
+        </filler>
+    </message>
+
+    <!-- Message 1I-->
+<message>
+    <messageType>
+        <value>1I</value>
+    </messageType>
+    <firm/>
+    <traderID/>
+    <orderNo/>
+    <clientID/>
+    <symbol/>
+    <side/>
+    <volume/>
+    <pubVolume/>
+    <price/>
+    <board/>
+    <filler>
+        <length>5</length>
+    </filler>
+    <flag/>
+    <filler>
+        <length>5</length>
+    </filler>
+</message>
+
+
+</root>

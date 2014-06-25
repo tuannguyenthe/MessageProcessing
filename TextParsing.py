@@ -1,8 +1,8 @@
 import struct
 import datetime
 import os
-import pymongo
 from pymongo import *
+
 
 def toInt(byte):
     return int.from_bytes(byte, byteorder='big',signed=False)
@@ -15,7 +15,7 @@ def readHeader(input):
         lastSequence = toInt(input[8:12])
         return [lastUpdate, lastSequence]
 
-def readRecord (input):
+def readRecord(input):
     if(len(input) !=24):
         return -1
     else:
@@ -29,7 +29,7 @@ def readRecord (input):
 def parseIdx(direction, path, linkID):
     fileIdx = direction + 'cont' + str(linkID) + '.idx'
     fileIdxsize = os.path.getsize(path + fileIdx)
-    fileIdxHandler = open(path + fileIdx, "rb");
+    fileIdxHandler = open(path + fileIdx, "rb")
     #print('Filesize is: {0} and Valid: {1} '.format(fileIdxsize, (fileIdxsize - 12)%24==0))
     readHeader(fileIdxHandler.read(12))
     output = []

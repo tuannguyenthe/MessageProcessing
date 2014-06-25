@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <ordering>sequential</ordering>
+    <header>
+        <lastUpdate>
+            <type>Timestamp</type>
+            <length>8</length>
+        </lastUpdate>
+        <lastSequence>
+            <type>int</type>
+            <length>4</length>
+        </lastSequence>
+    </header>
+    <body>
+        <record>
+            <timestamp>
+                <type>Timestamp</type>
+                <length>8</length>
+            </timestamp>
+            <sequence>
+                <type>int</type>
+                <length>4</length>
+            </sequence>
+            <opcode>
+                <type>int</type>
+                <length>4</length>
+            </opcode>
+            <position>
+                <type>long</type>
+                <length>4</length>
+            </position>
+            <contSize>
+                <type>short</type>
+                <length>2</length>
+            </contSize>
+        </record>
+
+    </body>
+</root>

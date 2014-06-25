@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<elements>
+    <messageType length="2" type="string"/>
+    <firm length="3" type="int"/>
+    <side length="1" type="string"/>
+    <symbol length="8" type="string"/>
+    <orderNo length="2" type="string"/>
+    <entryDate length="4" type="int"/>
+    <volume length="8" type="int"/>
+    <pubVolume length="8" type="int"/>
+    <price length="6" type="int"/>
+    <board length="1" type="string"/>
+    <traderID length="4" type="int"/>
+    <clientID length="10" type="string"/>
+    <confirmNo length="6" type="int"/>
+    <flag length="1" type="string"/>
+</elements>
