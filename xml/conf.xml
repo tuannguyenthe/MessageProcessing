@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<param>
+	<log-path>D:\Log</log-path>
+	<cleanup>True</cleanup>
+	<db>database.db</db>
+</param>
