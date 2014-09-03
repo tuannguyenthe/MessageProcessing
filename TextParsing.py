@@ -1,7 +1,8 @@
 import struct
-import datetime
+from datetime import date
 import os
 import message
+import mysql.connector as connector
 
 
 def toInt(byte):
@@ -12,7 +13,8 @@ def readheader(input):
     if len(input) != 12:
         return -1
     else:
-        lastUpdate = [toInt(input[0:4]), toInt(input[4:8])]
+        #lastUpdate = [toInt(input[0:4]), toInt(input[4:8])]
+        lastUpdate = toInt(input[0:4])
         lastSequence = toInt(input[8:12])
         return [lastUpdate, lastSequence]
 
@@ -23,13 +25,19 @@ def readrecord(input):
     else:
         return [toInt(input[0:4]), toInt(input[8:12]), toInt(input[12:16]), toInt(input[16:20]), toInt(input[20:22])]
 
-def parseLog(direction, path, linkID):
+def parseLog(direction, path, linkID, cnx):
     fileIdx = direction + 'cont' + str(linkID) + '.idx'
     fileLog = direction + 'cont' + str(linkID) + '.log'
+    cur = cnx.cursor()
+
+    insert_new_order = ('INSERT INTO orderz (broker_id, order_number, entry_date, client_id, '
+                         'client_type, buy_sell, symbol, volume, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)')
+    insert_matched_order = ('INSERT INTO match_status (broker_id, order_number, entry_date, buy_sell, '
+                             'volume, price) VALUES (%s, %s, %s, %s, %s, %s)')
 
     with open(path + fileIdx, "rb") as fileIdxHandler, open(path + fileLog, "rb") as fileLogHandler:
         #just ignore the readheader function
-        readheader(fileIdxHandler.read(12))
+        header_date = date.fromtimestamp(readheader(fileIdxHandler.read(12))[0])
         rec = 0
         while rec != -1:
             rec = readrecord(fileIdxHandler.read(24))
@@ -48,7 +56,44 @@ def parseLog(direction, path, linkID):
             #read messages
             while len(currentsequence) > 1:
                 msg = currentsequence[:message.messagelength.get(currentsequence[0:2].decode())].decode()
-                print(msg)  # this is what we need put this to database
+
+                if msg[0:2] == '1I':
+                    data_new_order = (str(int(msg[2:5])),  #broker_id
+                                      msg[9:17].strip(),  #order_number
+                                      header_date,  #entry_date
+                                      msg[17:27],  #client_id
+                                      msg[64:65],  #client_type
+                                      msg[35:36],  #buy_sell
+                                      msg[27:35].strip(),  #symbol
+                                      msg[36:44].strip(),  # volume,
+                                      msg[52:58].strip())  # price
+                    cur.execute(insert_new_order, data_new_order)
+                    cnx.commit()
+                elif msg[0:2] == '2E':
+                    data_match_status = (str(int(msg[2:5])),  #broker_id
+                                      msg[6:14].strip(),  #order_number
+                                      header_date,  #entry_date
+                                      msg[5:6],  #buy_sell
+                                      msg[20:28].strip(),  # volume,
+                                      msg[28:34].strip())  # price
+                    cur.execute(insert_matched_order, data_match_status)
+                    cnx.commit()
+                elif msg[0:2] == '2I':
+                    data_match_status_buy = (str(int(msg[2:5])),  #broker_id
+                                      msg[5:13].strip(),  #order_number
+                                      header_date,  #entry_date
+                                      msg[5:6],  #buy_sell
+                                      msg[29:37].strip(),  # volume,
+                                      msg[37:43].strip())  # price
+                    data_match_status_sell = (str(int(msg[2:5])),  #broker_id
+                                      msg[17:25].strip(),  #order_number
+                                      header_date,  #entry_date
+                                      msg[5:6],  #buy_sell
+                                      msg[29:37].strip(),  # volume,
+                                      msg[37:43].strip())  # price
+                    cur.executemany(insert_matched_order, [data_match_status_buy, data_match_status_sell, ])
+                    cnx.commit()
+
                 currentsequence = currentsequence[1 + message.messagelength.get(currentsequence[0:2].decode()):]
 
             #timestamp is here
@@ -132,7 +177,21 @@ def read2G(input):
 def read2E(input):
     return 0
 
-path = "D:/Logs/15-08/"
+path = "D:/Logs/03-09/"
 linkID = 1
+
+cnx = connector.connect(user='monty', password='python', host='localhost', database='orders')
+cursorA = cnx.cursor(buffered=True)
+
+get_broker = ('SELECT broker_id FROM brokers WHERE broker_status !="N"')
+cursorA.execute(get_broker)
+
+for broker_id in cursorA:
+    parseLog('i', path, broker_id[0], cnx)
+    parseLog('o', path, broker_id[0], cnx)
+
+cnx.close()
+
+
 #idx1 = parseIdx(path, linkID)
-parseLog('i', path, linkID)
+#parseLog('i', path, linkID)
