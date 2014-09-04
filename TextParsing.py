@@ -125,8 +125,8 @@ def parseLog(direction, path, linkID, cnx):
 
     return 0
 
-
-path = 'D:/Logs/03-09/'
+folder_date = input('Enter folder date: ')
+path = 'D:/Logs/' + folder_date + '/'
 csv_path = path + 'csv/'
 
 mode = 'csv'
@@ -144,6 +144,8 @@ if mode == 'db':
     cnx.close()
 
 elif mode == 'csv':
+    if os.path.exists(csv_path) != True:
+        os.mkdir(csv_path)
     with open(csv_path + 'new_order.csv', "a") as csv_new_order_handler, \
             open(csv_path + 'deal.csv', "a") as csv_deal_handler:
         csv_new_order_handler.write('broker_id' + delimiter + 'order_number' + delimiter +
